@@ -35,7 +35,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="/home/javier/repos/vcard-personal-portfolio/venv"
+VIRTUAL_ENV="/home/javier/repos/portfolio/venv"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"
