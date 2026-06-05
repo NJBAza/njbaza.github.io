@@ -29,3 +29,15 @@ desktop.ini
 # --- Local secrets ---
 .env
 .env.local
+
+# --- Quarto build artefacts ---
+# The published HTML lives under assets/papers/ and IS committed so deploys
+# work without a build step. Only working/cache folders are ignored.
+contributions/.quarto/
+contributions/_freeze/
+contributions/*_files/
+contributions/*.tex.bak
+
+# --- uv / Python env inside contributions/ ---
+contributions/.venv/
+contributions/__pycache__/

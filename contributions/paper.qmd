@@ -1,0 +1,400 @@
+---
+title: "Architecting a Business with MLOps and Data Science"
+subtitle: "From Models to Enterprise Learning Systems"
+author:
+  - name: N. Javier Buitrago Aza
+    email: njavierbuitragoa@gmail.com
+    affiliation: Independent / Capgemini
+date: today
+abstract: |
+  Most organizations invest heavily in Data Science, Machine Learning and
+  MLOps, yet many struggle to turn analytical insights into measurable
+  business value. This article argues that Data Science and MLOps should be
+  treated as components of a broader enterprise architecture and that modern
+  organizations must evolve from model-centric thinking toward
+  *enterprise learning systems*: architectures capable of continuously
+  sensing, learning, adapting and generating business value.
+keywords:
+  - Business Architecture
+  - MLOps
+  - Data Science
+  - Enterprise Learning Systems
+  - Quality Attributes
+  - Experimentation
+---
+
+# Introduction
+
+Most organizations invest heavily in Data Science, Machine Learning and MLOps
+across the data engineering, data governance and platform layers. In the
+particular case of models --- classical classifiers, regressions, even
+forecasting models --- models are trained, dashboards are built, experiments
+are executed, and cloud platforms process vast amounts of data every day. Yet
+despite these investments, many organizations still struggle to convert
+analytical insights into measurable business value.
+
+One can ask what happens with the expected results, and the answer is usually
+the same: **the problem is not technological, the problem is architectural.**
+
+To be concrete, machine learning models are often treated as isolated
+technical assets rather than as components of a larger enterprise system.
+Accuracy improves, yet decision quality remains unchanged. Experiments
+produce statistically significant results, yet business outcomes fail to
+improve. Monitoring platforms detect drift, yet strategic decisions continue
+to rely on outdated assumptions.
+
+This article argues that Data Science and MLOps should be viewed as components
+of a broader enterprise architecture. Modern organizations must evolve from
+model-centric thinking toward **enterprise learning systems**: architectures
+capable of continuously sensing, learning, adapting and generating business
+value. Generative AI is, of course, also a standard to consider; for the
+purposes of this paper the same discussions apply.
+
+
+# The Problem with Traditional Data Science
+
+Most machine learning initiatives optimize *models* instead of optimizing the
+*enterprise*. Teams frequently focus on:
+
+- Prediction accuracy.
+- AUC and F1 scores.
+- $R^2$, RMSE and similar regression metrics.
+- Feature engineering.
+- Hyperparameter tuning.
+
+These metrics are important, but they are not business outcomes.
+
+A highly accurate model with low adoption, poor operational integration or
+limited strategic impact generates little value. Business value emerges only
+when **predictions become decisions**, **decisions become actions** and
+**actions influence measurable outcomes**.
+
+This observation leads to a simple but powerful principle:
+
+> The objective of Machine Learning is not prediction.
+> The objective is **improved decision-making**.
+
+
+# The Enterprise as a (Dynamic) Learning System
+
+A modern enterprise should not be understood as a static collection of
+processes, applications, dashboards and machine learning models. It is better
+understood as a **dynamic system**: its state changes over time as leaders
+launch experiments, deploy models, modify processes, reallocate resources and
+respond to market signals.
+
+It is also a **learning system**, because those actions generate outcomes and
+those outcomes should feed back into future decisions. In this sense, MLOps
+is not only a technical discipline for deploying models; it is part of the
+enterprise feedback mechanism that allows the organization to observe, act,
+measure and adapt.
+
+## A formal model of the enterprise
+
+An enterprise $\mathcal{E}$ can be viewed as a dynamic system composed of
+capabilities $\mathcal{C}$, processes $\mathcal{P}$, resources $\mathcal{R}$,
+data assets $\mathcal{D}$ and decision mechanisms $\mathcal{M}$. In the
+context of MLOps and Data Science, the decision mechanisms of interest are
+machine learning models; for the purposes of this discussion we therefore
+denote the set of all ML models by $\mathcal{M}$.
+
+Let $\mathcal{S}$ be the set of possible enterprise states, let $\mathcal{A}$
+be the set of possible organizational actions, and let
+$t \in \mathbb{N} \cup \{0\}$ denote discrete time. A **state-transition
+function** is a map
+
+$$
+F \colon \mathcal{S} \times \mathcal{A} \rightarrow \mathcal{S},
+$$
+
+such that
+
+$$
+S_{t+1} = F(S_t, A_t).
+$$
+
+Here $S_t \in \mathcal{S}$ represents the enterprise state at time $t$, and
+$A_t \in \mathcal{A}$ represents the organizational action taken at time $t$.
+The state $S_t$ may include the enterprise configuration at that time,
+
+$$
+S_t \;\equiv\; (C_t, P_t, R_t, D_t, M_t),
+$$
+
+where
+
+$$
+C_t \subset \mathcal{C}, \quad
+P_t \subset \mathcal{P}, \quad
+R_t \subset \mathcal{R}, \quad
+D_t \subset \mathcal{D}, \quad
+M_t \subset \mathcal{M}.
+$$
+
+The initial state $S_0$ represents the initial enterprise configuration,
+
+$$
+S_0 \;\equiv\; (C_0, P_0, R_0, D_0, M_0).
+$$
+
+The transition equation $S_{t+1} = F(S_t, A_t)$ therefore expresses that the
+next enterprise state is determined by the current enterprise state and the
+action applied to it.
+
+## The enterprise value function
+
+We can now define an **enterprise value function** as a map
+
+$$
+V \colon \mathcal{S} \rightarrow \mathbb{R},
+$$
+
+where $V(S_t)$ represents the business value associated with the enterprise
+state $S_t \in \mathcal{S}$ at time $t \in \mathbb{N} \cup \{0\}$. The
+sequence $\{V(S_t)\}_{t \in \mathbb{N} \cup \{0\}}$ therefore represents the
+realized enterprise value over time.
+
+The value generated by the action $A_t$ is defined as
+
+$$
+\Delta V_t \coloneqq V(S_{t+1}) - V(S_t),
+$$
+
+and using the transition function,
+
+$$
+\Delta V_t = V(F(S_t, A_t)) - V(S_t).
+$$
+
+From a business perspective, an action $A_t$ is:
+
+- **value-increasing** if $\Delta V_t > 0$,
+- **value-neutral** if $\Delta V_t = 0$,
+- **value-destroying** if $\Delta V_t < 0$.
+
+In the MLOps and Data Science context, $A_t$ may represent deploying a model,
+launching an experiment, retraining a model, changing a campaign,
+reallocating budget or modifying an operational process. The formulation is
+intentionally general: it does not assume that a model improves the
+enterprise by default. **A model creates value only if the transition it
+induces moves the enterprise from $S_t$ to $S_{t+1}$ in a way that
+increases $V$.**
+
+
+# Business Architecture as the Missing Layer
+
+Business Architecture provides the structure that connects strategy,
+operations and technology. Without it:
+
+- Models remain disconnected from strategy.
+- Experiments remain disconnected from operations.
+- Metrics remain disconnected from governance.
+
+Business **capabilities** become the primary mechanism through which
+analytical insights create enterprise value. Instead of asking
+
+> *What model should we build?*
+
+organizations should ask
+
+> *What business capability are we trying to improve?*
+
+This shift fundamentally changes how MLOps systems are designed and governed.
+
+
+# Architecturally Significant Requirements
+
+In software architecture, **Architecturally Significant Requirements (ASRs)**
+are requirements that strongly influence architectural decisions. For MLOps
+systems, ASRs typically focus on **quality attributes** rather than
+predictive outputs. Representative examples include:
+
+- **Scalability.** Real-time, consistent predictions over a given time
+  interval without degradation of the system as the request volume grows.
+- **Availability.** The system must remain operational under faults and load
+  spikes, with explicit recovery-time and recovery-point objectives.
+- **Security.** End-to-end protection of data and models, including
+  authentication, authorization, encryption in transit and at rest, and
+  intrusion-detection coverage of the inference path.
+- **Observability.** The ability to inspect, trace and explain every
+  prediction, every retraining and every data transformation in production.
+- **Modifiability.** Changes to features, models or pipelines can be
+  introduced and rolled back safely without disrupting downstream consumers.
+- **Explainability.** Predictions can be explained to business stakeholders
+  and regulators in terms aligned with the decisions they support.
+
+A useful mechanism for discovering ASRs is the **Utility Tree**, which
+decomposes stakeholder concerns into measurable quality scenarios.
+Architectures can then be evaluated using methods such as the
+**Architecture Tradeoff Analysis Method (ATAM)**, exposing risks,
+sensitivities and architectural tradeoffs before systems reach production.
+
+
+# Experimentation as a Business Capability
+
+Experimentation is not merely a statistical activity. It is a **strategic
+business capability**. The fundamental causal quantity of interest is the
+**Average Treatment Effect**,
+
+$$
+ATE = \mathbb{E}[Y(1) - Y(0)],
+$$
+
+where $Y(1)$ represents the outcome under treatment and $Y(0)$ represents
+the outcome under control. In practice, organizations estimate
+
+$$
+\widehat{ATE} = \bar{Y}_T - \bar{Y}_C.
+$$
+
+Before evaluating business impact, however, **experiment quality must be
+validated**. A common balance diagnostic is the **Standardized Mean
+Difference**,
+
+$$
+SMD(X) = \frac{\bar{X}_T - \bar{X}_C}{\sqrt{\dfrac{s_T^2 + s_C^2}{2}}}.
+$$
+
+Typically $|SMD| < 0.1$ indicates acceptable covariate balance.
+
+For monetary outcomes, which frequently exhibit unequal variances,
+**Welch's t-test** provides a more robust inference framework:
+
+$$
+t_W = \frac{\bar{Y}_T - \bar{Y}_C}{\sqrt{\dfrac{s_{Y,T}^2}{n_T}
+                                          + \dfrac{s_{Y,C}^2}{n_C}}}.
+$$
+
+A mature experimentation capability therefore evaluates both **experimental
+validity** and **business impact**.
+
+
+# Propensity Models as Strategic Decision Engines
+
+Propensity models estimate the probability that a customer or entity performs
+a target action. Formally,
+
+$$
+p_i = \mathbb{P}(Y_i = 1 \mid X_i).
+$$
+
+Examples include:
+
+- Purchase propensity.
+- Churn propensity.
+- Upgrade propensity.
+- Response propensity.
+
+These models become strategic instruments because they allocate scarce
+resources toward the most valuable opportunities. A common operational metric
+is the **Decile Lift**,
+
+$$
+Lift_{D_1} = \frac{\mathbb{E}[Y \mid D_1]}{\mathbb{E}[Y]}.
+$$
+
+High lift indicates strong prioritization capability and efficient resource
+allocation.
+
+
+# Drift as Enterprise Risk
+
+Models degrade over time because businesses evolve. Two common mechanisms
+are:
+
+- **Covariate shift.**
+- **Concept drift.**
+
+To monitor changing populations, organizations frequently employ the
+**Population Stability Index**,
+
+$$
+PSI = \sum_{k=1}^{K} (A_k - E_k)\,
+      \ln\!\left( \frac{A_k}{E_k} \right).
+$$
+
+A common interpretation is:
+
+| $PSI$ value          | Interpretation        |
+|----------------------|-----------------------|
+| $PSI < 0.10$         | Stable                |
+| $0.10 \le PSI < 0.25$ | Moderate shift       |
+| $PSI \ge 0.25$       | Significant shift     |
+
+Drift should not be viewed solely as a technical concern; it is an
+**enterprise risk indicator**. We may define the **Enterprise Machine
+Learning Risk** as
+
+$$
+EMLR = P_{\text{drift}} \times \text{Impact}_{\text{business}}.
+$$
+
+This transforms monitoring from a technical activity into a governance
+mechanism.
+
+
+# Stratified Modeling at Scale
+
+Many organizations operate across thousands of customers, stores, products,
+routes, vessels or geographic regions. A single global model may fail to
+capture these differences. Instead, organizations deploy **model families**,
+
+$$
+\mathcal{M} \coloneqq \{m_1, m_2, \ldots, m_N\},
+$$
+
+so that predictions become
+
+$$
+\hat{y}_i = m_i(x_i).
+$$
+
+This architectural pattern is known as **stratified modeling**. Each model
+requires:
+
+- Independent monitoring.
+- Dedicated thresholds.
+- Retraining policies.
+- Governance controls.
+
+Consequently, scalable MLOps architectures must support massively parallel
+training and deployment pipelines.
+
+
+# The Strategic Recommendation Layer
+
+Data alone does not create business value: insights must be transformed into
+decisions. The **Strategic Recommendation Layer** converts analytical
+evidence into governance actions. A typical decision sequence evaluates:
+
+1. Statistical power.
+2. Experimental validity.
+3. Effect size.
+4. Model trustworthiness.
+5. Operational feasibility.
+
+The resulting diagnoses map directly to recommendations:
+
+| Diagnosis                       | Recommendation              |
+|---------------------------------|-----------------------------|
+| Significant positive impact     | Scale                       |
+| High drift                      | Retrain                     |
+| Low power                       | Collect additional data     |
+| Low lift                        | Recalibrate targeting       |
+| Negative impact                 | Retire model                |
+
+Analytics therefore becomes a **governance capability** rather than a
+reporting capability.
+
+
+# Conclusion
+
+The future of Data Science is not the model.
+The future is the **enterprise learning system**.
+
+Organizations that successfully integrate Business Architecture,
+experimentation, MLOps, governance and continuous feedback mechanisms create
+adaptive systems capable of evolving alongside the business itself. In such
+organizations, machine learning is no longer an isolated technical
+discipline: it becomes a **strategic capability embedded within the
+architecture of the enterprise**.

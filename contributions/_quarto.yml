@@ -1,0 +1,51 @@
+project:
+  type: default
+  # Render directly into the static site so the portfolio's deploy pipeline
+  # publishes the paper alongside index.html.
+  output-dir: ../assets/papers/architecting-business-mlops
+  render:
+    - paper.qmd
+
+execute:
+  freeze: auto
+
+# Bibliography is wired up but currently unused by paper.qmd.
+# Add `[@key]` citations in any .qmd to enable the references section.
+bibliography: references.bib
+csl: https://www.zotero.org/styles/ieee
+link-citations: true
+
+format:
+  html:
+    # Output as index.html so the URL is just /assets/papers/architecting-business-mlops/
+    output-file: index.html
+    theme: cosmo
+    toc: true
+    toc-depth: 3
+    toc-location: left
+    number-sections: true
+    code-fold: false
+    fig-cap-location: bottom
+    highlight-style: github
+    html-math-method: katex
+    smooth-scroll: true
+    embed-resources: false
+    # Small "back to portfolio" link in the page header.
+    include-before-body:
+      text: |
+        <p style="margin: 0 0 1.5rem; font-size: 0.9rem;">
+          <a href="../../../index.html">&larr; Back to portfolio</a>
+        </p>
+
+  pdf:
+    documentclass: scrartcl
+    papersize: a4
+    geometry:
+      - margin=1in
+    number-sections: true
+    toc: true
+    toc-depth: 3
+    fig-cap-location: bottom
+    keep-tex: false
+    pdf-engine: xelatex
+    cite-method: biblatex

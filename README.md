@@ -82,6 +82,15 @@ Styling tokens (colors, font sizes, shadows, transitions) are defined as CSS cus
 - **Icons** via [Ionicons 5.5.2](https://ionic.io/ionicons) loaded from the CDN.
 - **Fonts** via Google Fonts (Poppins, weights 300/400/500/600).
 - **Responsive** down to 320 px wide; the sidebar collapses on mobile and expands with the “Show Contacts” button.
+- **Long‑form articles** are written in [Quarto](https://quarto.org) under [contributions/](contributions/) and rendered directly into [assets/papers/](assets/papers/). They appear on the Portfolio page under the **Articles** filter.
+
+---
+
+## Deploy
+
+A GitHub Actions workflow ([.github/workflows/deploy.yml](.github/workflows/deploy.yml)) renders every Quarto paper and publishes the repo to **GitHub Pages** on each push to `main`. To enable it: push to GitHub, then **Settings → Pages → Source: GitHub Actions**.
+
+Because the rendered HTML is committed under [assets/papers/](assets/papers/), the site also works on Netlify, Vercel, Cloudflare Pages or any plain static host with no build step required.
 
 ---
 

@@ -1,0 +1,40 @@
+[project]
+name = "portfolio-contributions"
+version = "0.1.0"
+description = "Quarto papers and long-form technical writing for the Javier Buitrago portfolio."
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [
+    { name = "N. Javier Buitrago Aza", email = "njavierbuitragoa@gmail.com" },
+]
+
+# Core runtime dependencies needed to render the Quarto papers.
+# - `quarto-cli` bundles the Quarto binary inside the venv so we never need a
+#   system-wide install (`sudo dpkg -i quarto-*.deb`).
+# - `jupyter` provides the kernel that Quarto invokes for Python code chunks.
+dependencies = [
+    "quarto-cli>=1.5",
+    "jupyter>=1.0",
+    "nbclient>=0.10",
+    "nbformat>=5.10",
+]
+
+[dependency-groups]
+# Common scientific stack for data-science / MLOps style papers.
+# Activate with: `uv sync --group science`
+science = [
+    "numpy>=1.26",
+    "pandas>=2.2",
+    "matplotlib>=3.8",
+    "scipy>=1.12",
+]
+
+# Linting / housekeeping for any Python helper scripts in this folder.
+# Activate with: `uv sync --group dev`
+dev = [
+    "ruff>=0.5",
+]
+
+[tool.uv]
+# Keep the lockfile reproducible across the team.
+package = false
