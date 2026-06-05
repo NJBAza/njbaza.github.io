@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="N. Javier Buitrago Aza">
+<meta name="dcterms.date" content="2026-06-05">
+<meta name="keywords" content="Business Architecture, MLOps, Data Science, Enterprise Learning Systems, Quality Attributes, Experimentation">
+
+<title>Architecting a Business with MLOps and Data Science</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="paper_files/libs/clipboard/clipboard.min.js"></script>
+<script src="paper_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="paper_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="paper_files/libs/quarto-html/popper.min.js"></script>
+<script src="paper_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="paper_files/libs/quarto-html/anchor.min.js"></script>
+<link href="paper_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="paper_files/libs/quarto-html/quarto-syntax-highlighting-de63f62b328812d8e578a4d74e282472.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="paper_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="paper_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="paper_files/libs/bootstrap/bootstrap-396601e3c213cf3354c4ecdeb513c086.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<style>html{ scroll-behavior: smooth; }</style>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css">
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article toc-left">
+<div id="quarto-sidebar-toc-left" class="sidebar toc-left">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction"><span class="header-section-number">1</span> Introduction</a></li>
+  <li><a href="#the-problem-with-traditional-data-science" id="toc-the-problem-with-traditional-data-science" class="nav-link" data-scroll-target="#the-problem-with-traditional-data-science"><span class="header-section-number">2</span> The Problem with Traditional Data Science</a></li>
+  <li><a href="#the-enterprise-as-a-dynamic-learning-system" id="toc-the-enterprise-as-a-dynamic-learning-system" class="nav-link" data-scroll-target="#the-enterprise-as-a-dynamic-learning-system"><span class="header-section-number">3</span> The Enterprise as a (Dynamic) Learning System</a>
+  <ul class="collapse">
+  <li><a href="#a-formal-model-of-the-enterprise" id="toc-a-formal-model-of-the-enterprise" class="nav-link" data-scroll-target="#a-formal-model-of-the-enterprise"><span class="header-section-number">3.1</span> A formal model of the enterprise</a></li>
+  <li><a href="#the-enterprise-value-function" id="toc-the-enterprise-value-function" class="nav-link" data-scroll-target="#the-enterprise-value-function"><span class="header-section-number">3.2</span> The enterprise value function</a></li>
+  </ul></li>
+  <li><a href="#business-architecture-as-the-missing-layer" id="toc-business-architecture-as-the-missing-layer" class="nav-link" data-scroll-target="#business-architecture-as-the-missing-layer"><span class="header-section-number">4</span> Business Architecture as the Missing Layer</a></li>
+  <li><a href="#architecturally-significant-requirements" id="toc-architecturally-significant-requirements" class="nav-link" data-scroll-target="#architecturally-significant-requirements"><span class="header-section-number">5</span> Architecturally Significant Requirements</a></li>
+  <li><a href="#experimentation-as-a-business-capability" id="toc-experimentation-as-a-business-capability" class="nav-link" data-scroll-target="#experimentation-as-a-business-capability"><span class="header-section-number">6</span> Experimentation as a Business Capability</a></li>
+  <li><a href="#propensity-models-as-strategic-decision-engines" id="toc-propensity-models-as-strategic-decision-engines" class="nav-link" data-scroll-target="#propensity-models-as-strategic-decision-engines"><span class="header-section-number">7</span> Propensity Models as Strategic Decision Engines</a></li>
+  <li><a href="#drift-as-enterprise-risk" id="toc-drift-as-enterprise-risk" class="nav-link" data-scroll-target="#drift-as-enterprise-risk"><span class="header-section-number">8</span> Drift as Enterprise Risk</a></li>
+  <li><a href="#stratified-modeling-at-scale" id="toc-stratified-modeling-at-scale" class="nav-link" data-scroll-target="#stratified-modeling-at-scale"><span class="header-section-number">9</span> Stratified Modeling at Scale</a></li>
+  <li><a href="#the-strategic-recommendation-layer" id="toc-the-strategic-recommendation-layer" class="nav-link" data-scroll-target="#the-strategic-recommendation-layer"><span class="header-section-number">10</span> The Strategic Recommendation Layer</a></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion"><span class="header-section-number">11</span> Conclusion</a></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="paper.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
+</div>
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+</div>
+<main class="content" id="quarto-document-content">
+<p style="margin: 0 0 1.5rem; font-size: 0.9rem;">
+  <a href="../../../index.html">← Back to portfolio</a>
+</p>
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Architecting a Business with MLOps and Data Science</h1>
+<p class="subtitle lead">From Models to Enterprise Learning Systems</p>
+</div>
+
+
+<div class="quarto-title-meta-author">
+  <div class="quarto-title-meta-heading">Author</div>
+  <div class="quarto-title-meta-heading">Affiliation</div>
+  
+    <div class="quarto-title-meta-contents">
+    <p class="author">N. Javier Buitrago Aza <a href="mailto:njavierbuitragoa@gmail.com" class="quarto-title-author-email"><i class="bi bi-envelope"></i></a> </p>
+  </div>
+  <div class="quarto-title-meta-contents">
+        <p class="affiliation">
+            Independent / Capgemini
+          </p>
+      </div>
+  </div>
+
+<div class="quarto-title-meta">
+
+      
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">June 5, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+<div>
+  <div class="abstract">
+    <div class="block-title">Abstract</div>
+    <p>Most organizations invest heavily in Data Science, Machine Learning and MLOps, yet many struggle to turn analytical insights into measurable business value. This article argues that Data Science and MLOps should be treated as components of a broader enterprise architecture and that modern organizations must evolve from model-centric thinking toward <em>enterprise learning systems</em>: architectures capable of continuously sensing, learning, adapting and generating business value.</p>
+  </div>
+</div>
+
+<div>
+  <div class="keywords">
+    <div class="block-title">Keywords</div>
+    <p>Business Architecture, MLOps, Data Science, Enterprise Learning Systems, Quality Attributes, Experimentation</p>
+  </div>
+</div>
+
+</header>
+
+
+<section id="introduction" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Introduction</h1>
+<p>Most organizations invest heavily in Data Science, Machine Learning and MLOps across the data engineering, data governance and platform layers. In the particular case of models — classical classifiers, regressions, even forecasting models — models are trained, dashboards are built, experiments are executed, and cloud platforms process vast amounts of data every day. Yet despite these investments, many organizations still struggle to convert analytical insights into measurable business value.</p>
+<p>One can ask what happens with the expected results, and the answer is usually the same: <strong>the problem is not technological, the problem is architectural.</strong></p>
+<p>To be concrete, machine learning models are often treated as isolated technical assets rather than as components of a larger enterprise system. Accuracy improves, yet decision quality remains unchanged. Experiments produce statistically significant results, yet business outcomes fail to improve. Monitoring platforms detect drift, yet strategic decisions continue to rely on outdated assumptions.</p>
+<p>This article argues that Data Science and MLOps should be viewed as components of a broader enterprise architecture. Modern organizations must evolve from model-centric thinking toward <strong>enterprise learning systems</strong>: architectures capable of continuously sensing, learning, adapting and generating business value. Generative AI is, of course, also a standard to consider; for the purposes of this paper the same discussions apply.</p>
+</section>
+<section id="the-problem-with-traditional-data-science" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> The Problem with Traditional Data Science</h1>
+<p>Most machine learning initiatives optimize <em>models</em> instead of optimizing the <em>enterprise</em>. Teams frequently focus on:</p>
+<ul>
+<li>Prediction accuracy.</li>
+<li>AUC and F1 scores.</li>
+<li><span class="math inline">R^2</span>, RMSE and similar regression metrics.</li>
+<li>Feature engineering.</li>
+<li>Hyperparameter tuning.</li>
+</ul>
+<p>These metrics are important, but they are not business outcomes.</p>
+<p>A highly accurate model with low adoption, poor operational integration or limited strategic impact generates little value. Business value emerges only when <strong>predictions become decisions</strong>, <strong>decisions become actions</strong> and <strong>actions influence measurable outcomes</strong>.</p>
+<p>This observation leads to a simple but powerful principle:</p>
+<blockquote class="blockquote">
+<p>The objective of Machine Learning is not prediction. The objective is <strong>improved decision-making</strong>.</p>
+</blockquote>
+</section>
+<section id="the-enterprise-as-a-dynamic-learning-system" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> The Enterprise as a (Dynamic) Learning System</h1>
+<p>A modern enterprise should not be understood as a static collection of processes, applications, dashboards and machine learning models. It is better understood as a <strong>dynamic system</strong>: its state changes over time as leaders launch experiments, deploy models, modify processes, reallocate resources and respond to market signals.</p>
+<p>It is also a <strong>learning system</strong>, because those actions generate outcomes and those outcomes should feed back into future decisions. In this sense, MLOps is not only a technical discipline for deploying models; it is part of the enterprise feedback mechanism that allows the organization to observe, act, measure and adapt.</p>
+<section id="a-formal-model-of-the-enterprise" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="a-formal-model-of-the-enterprise"><span class="header-section-number">3.1</span> A formal model of the enterprise</h2>
+<p>An enterprise <span class="math inline">\mathcal{E}</span> can be viewed as a dynamic system composed of capabilities <span class="math inline">\mathcal{C}</span>, processes <span class="math inline">\mathcal{P}</span>, resources <span class="math inline">\mathcal{R}</span>, data assets <span class="math inline">\mathcal{D}</span> and decision mechanisms <span class="math inline">\mathcal{M}</span>. In the context of MLOps and Data Science, the decision mechanisms of interest are machine learning models; for the purposes of this discussion we therefore denote the set of all ML models by <span class="math inline">\mathcal{M}</span>.</p>
+<p>Let <span class="math inline">\mathcal{S}</span> be the set of possible enterprise states, let <span class="math inline">\mathcal{A}</span> be the set of possible organizational actions, and let <span class="math inline">t \in \mathbb{N} \cup \{0\}</span> denote discrete time. A <strong>state-transition function</strong> is a map</p>
+<p><span class="math display">
+F \colon \mathcal{S} \times \mathcal{A} \rightarrow \mathcal{S},
+</span></p>
+<p>such that</p>
+<p><span class="math display">
+S_{t+1} = F(S_t, A_t).
+</span></p>
+<p>Here <span class="math inline">S_t \in \mathcal{S}</span> represents the enterprise state at time <span class="math inline">t</span>, and <span class="math inline">A_t \in \mathcal{A}</span> represents the organizational action taken at time <span class="math inline">t</span>. The state <span class="math inline">S_t</span> may include the enterprise configuration at that time,</p>
+<p><span class="math display">
+S_t \;\equiv\; (C_t, P_t, R_t, D_t, M_t),
+</span></p>
+<p>where</p>
+<p><span class="math display">
+C_t \subset \mathcal{C}, \quad
+P_t \subset \mathcal{P}, \quad
+R_t \subset \mathcal{R}, \quad
+D_t \subset \mathcal{D}, \quad
+M_t \subset \mathcal{M}.
+</span></p>
+<p>The initial state <span class="math inline">S_0</span> represents the initial enterprise configuration,</p>
+<p><span class="math display">
+S_0 \;\equiv\; (C_0, P_0, R_0, D_0, M_0).
+</span></p>
+<p>The transition equation <span class="math inline">S_{t+1} = F(S_t, A_t)</span> therefore expresses that the next enterprise state is determined by the current enterprise state and the action applied to it.</p>
+</section>
+<section id="the-enterprise-value-function" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="the-enterprise-value-function"><span class="header-section-number">3.2</span> The enterprise value function</h2>
+<p>We can now define an <strong>enterprise value function</strong> as a map</p>
+<p><span class="math display">
+V \colon \mathcal{S} \rightarrow \mathbb{R},
+</span></p>
+<p>where <span class="math inline">V(S_t)</span> represents the business value associated with the enterprise state <span class="math inline">S_t \in \mathcal{S}</span> at time <span class="math inline">t \in \mathbb{N} \cup \{0\}</span>. The sequence <span class="math inline">\{V(S_t)\}_{t \in \mathbb{N} \cup \{0\}}</span> therefore represents the realized enterprise value over time.</p>
+<p>The value generated by the action <span class="math inline">A_t</span> is defined as</p>
+<p><span class="math display">
+\Delta V_t \coloneqq V(S_{t+1}) - V(S_t),
+</span></p>
+<p>and using the transition function,</p>
+<p><span class="math display">
+\Delta V_t = V(F(S_t, A_t)) - V(S_t).
+</span></p>
+<p>From a business perspective, an action <span class="math inline">A_t</span> is:</p>
+<ul>
+<li><strong>value-increasing</strong> if <span class="math inline">\Delta V_t &gt; 0</span>,</li>
+<li><strong>value-neutral</strong> if <span class="math inline">\Delta V_t = 0</span>,</li>
+<li><strong>value-destroying</strong> if <span class="math inline">\Delta V_t &lt; 0</span>.</li>
+</ul>
+<p>In the MLOps and Data Science context, <span class="math inline">A_t</span> may represent deploying a model, launching an experiment, retraining a model, changing a campaign, reallocating budget or modifying an operational process. The formulation is intentionally general: it does not assume that a model improves the enterprise by default. <strong>A model creates value only if the transition it induces moves the enterprise from <span class="math inline">S_t</span> to <span class="math inline">S_{t+1}</span> in a way that increases <span class="math inline">V</span>.</strong></p>
+</section>
+</section>
+<section id="business-architecture-as-the-missing-layer" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Business Architecture as the Missing Layer</h1>
+<p>Business Architecture provides the structure that connects strategy, operations and technology. Without it:</p>
+<ul>
+<li>Models remain disconnected from strategy.</li>
+<li>Experiments remain disconnected from operations.</li>
+<li>Metrics remain disconnected from governance.</li>
+</ul>
+<p>Business <strong>capabilities</strong> become the primary mechanism through which analytical insights create enterprise value. Instead of asking</p>
+<blockquote class="blockquote">
+<p><em>What model should we build?</em></p>
+</blockquote>
+<p>organizations should ask</p>
+<blockquote class="blockquote">
+<p><em>What business capability are we trying to improve?</em></p>
+</blockquote>
+<p>This shift fundamentally changes how MLOps systems are designed and governed.</p>
+</section>
+<section id="architecturally-significant-requirements" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Architecturally Significant Requirements</h1>
+<p>In software architecture, <strong>Architecturally Significant Requirements (ASRs)</strong> are requirements that strongly influence architectural decisions. For MLOps systems, ASRs typically focus on <strong>quality attributes</strong> rather than predictive outputs. Representative examples include:</p>
+<ul>
+<li><strong>Scalability.</strong> Real-time, consistent predictions over a given time interval without degradation of the system as the request volume grows.</li>
+<li><strong>Availability.</strong> The system must remain operational under faults and load spikes, with explicit recovery-time and recovery-point objectives.</li>
+<li><strong>Security.</strong> End-to-end protection of data and models, including authentication, authorization, encryption in transit and at rest, and intrusion-detection coverage of the inference path.</li>
+<li><strong>Observability.</strong> The ability to inspect, trace and explain every prediction, every retraining and every data transformation in production.</li>
+<li><strong>Modifiability.</strong> Changes to features, models or pipelines can be introduced and rolled back safely without disrupting downstream consumers.</li>
+<li><strong>Explainability.</strong> Predictions can be explained to business stakeholders and regulators in terms aligned with the decisions they support.</li>
+</ul>
+<p>A useful mechanism for discovering ASRs is the <strong>Utility Tree</strong>, which decomposes stakeholder concerns into measurable quality scenarios. Architectures can then be evaluated using methods such as the <strong>Architecture Tradeoff Analysis Method (ATAM)</strong>, exposing risks, sensitivities and architectural tradeoffs before systems reach production.</p>
+</section>
+<section id="experimentation-as-a-business-capability" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> Experimentation as a Business Capability</h1>
+<p>Experimentation is not merely a statistical activity. It is a <strong>strategic business capability</strong>. The fundamental causal quantity of interest is the <strong>Average Treatment Effect</strong>,</p>
+<p><span class="math display">
+ATE = \mathbb{E}[Y(1) - Y(0)],
+</span></p>
+<p>where <span class="math inline">Y(1)</span> represents the outcome under treatment and <span class="math inline">Y(0)</span> represents the outcome under control. In practice, organizations estimate</p>
+<p><span class="math display">
+\widehat{ATE} = \bar{Y}_T - \bar{Y}_C.
+</span></p>
+<p>Before evaluating business impact, however, <strong>experiment quality must be validated</strong>. A common balance diagnostic is the <strong>Standardized Mean Difference</strong>,</p>
+<p><span class="math display">
+SMD(X) = \frac{\bar{X}_T - \bar{X}_C}{\sqrt{\dfrac{s_T^2 + s_C^2}{2}}}.
+</span></p>
+<p>Typically <span class="math inline">|SMD| &lt; 0.1</span> indicates acceptable covariate balance.</p>
+<p>For monetary outcomes, which frequently exhibit unequal variances, <strong>Welch’s t-test</strong> provides a more robust inference framework:</p>
+<p><span class="math display">
+t_W = \frac{\bar{Y}_T - \bar{Y}_C}{\sqrt{\dfrac{s_{Y,T}^2}{n_T}
+                                          + \dfrac{s_{Y,C}^2}{n_C}}}.
+</span></p>
+<p>A mature experimentation capability therefore evaluates both <strong>experimental validity</strong> and <strong>business impact</strong>.</p>
+</section>
+<section id="propensity-models-as-strategic-decision-engines" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> Propensity Models as Strategic Decision Engines</h1>
+<p>Propensity models estimate the probability that a customer or entity performs a target action. Formally,</p>
+<p><span class="math display">
+p_i = \mathbb{P}(Y_i = 1 \mid X_i).
+</span></p>
+<p>Examples include:</p>
+<ul>
+<li>Purchase propensity.</li>
+<li>Churn propensity.</li>
+<li>Upgrade propensity.</li>
+<li>Response propensity.</li>
+</ul>
+<p>These models become strategic instruments because they allocate scarce resources toward the most valuable opportunities. A common operational metric is the <strong>Decile Lift</strong>,</p>
+<p><span class="math display">
+Lift_{D_1} = \frac{\mathbb{E}[Y \mid D_1]}{\mathbb{E}[Y]}.
+</span></p>
+<p>High lift indicates strong prioritization capability and efficient resource allocation.</p>
+</section>
+<section id="drift-as-enterprise-risk" class="level1" data-number="8">
+<h1 data-number="8"><span class="header-section-number">8</span> Drift as Enterprise Risk</h1>
+<p>Models degrade over time because businesses evolve. Two common mechanisms are:</p>
+<ul>
+<li><strong>Covariate shift.</strong></li>
+<li><strong>Concept drift.</strong></li>
+</ul>
+<p>To monitor changing populations, organizations frequently employ the <strong>Population Stability Index</strong>,</p>
+<p><span class="math display">
+PSI = \sum_{k=1}^{K} (A_k - E_k)\,
+      \ln\!\left( \frac{A_k}{E_k} \right).
+</span></p>
+<p>A common interpretation is:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th><span class="math inline">PSI</span> value</th>
+<th>Interpretation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">PSI &lt; 0.10</span></td>
+<td>Stable</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">0.10 \le PSI &lt; 0.25</span></td>
+<td>Moderate shift</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">PSI \ge 0.25</span></td>
+<td>Significant shift</td>
+</tr>
+</tbody>
+</table>
+<p>Drift should not be viewed solely as a technical concern; it is an <strong>enterprise risk indicator</strong>. We may define the <strong>Enterprise Machine Learning Risk</strong> as</p>
+<p><span class="math display">
+EMLR = P_{\text{drift}} \times \text{Impact}_{\text{business}}.
+</span></p>
+<p>This transforms monitoring from a technical activity into a governance mechanism.</p>
+</section>
+<section id="stratified-modeling-at-scale" class="level1" data-number="9">
+<h1 data-number="9"><span class="header-section-number">9</span> Stratified Modeling at Scale</h1>
+<p>Many organizations operate across thousands of customers, stores, products, routes, vessels or geographic regions. A single global model may fail to capture these differences. Instead, organizations deploy <strong>model families</strong>,</p>
+<p><span class="math display">
+\mathcal{M} \coloneqq \{m_1, m_2, \ldots, m_N\},
+</span></p>
+<p>so that predictions become</p>
+<p><span class="math display">
+\hat{y}_i = m_i(x_i).
+</span></p>
+<p>This architectural pattern is known as <strong>stratified modeling</strong>. Each model requires:</p>
+<ul>
+<li>Independent monitoring.</li>
+<li>Dedicated thresholds.</li>
+<li>Retraining policies.</li>
+<li>Governance controls.</li>
+</ul>
+<p>Consequently, scalable MLOps architectures must support massively parallel training and deployment pipelines.</p>
+</section>
+<section id="the-strategic-recommendation-layer" class="level1" data-number="10">
+<h1 data-number="10"><span class="header-section-number">10</span> The Strategic Recommendation Layer</h1>
+<p>Data alone does not create business value: insights must be transformed into decisions. The <strong>Strategic Recommendation Layer</strong> converts analytical evidence into governance actions. A typical decision sequence evaluates:</p>
+<ol type="1">
+<li>Statistical power.</li>
+<li>Experimental validity.</li>
+<li>Effect size.</li>
+<li>Model trustworthiness.</li>
+<li>Operational feasibility.</li>
+</ol>
+<p>The resulting diagnoses map directly to recommendations:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Diagnosis</th>
+<th>Recommendation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Significant positive impact</td>
+<td>Scale</td>
+</tr>
+<tr class="even">
+<td>High drift</td>
+<td>Retrain</td>
+</tr>
+<tr class="odd">
+<td>Low power</td>
+<td>Collect additional data</td>
+</tr>
+<tr class="even">
+<td>Low lift</td>
+<td>Recalibrate targeting</td>
+</tr>
+<tr class="odd">
+<td>Negative impact</td>
+<td>Retire model</td>
+</tr>
+</tbody>
+</table>
+<p>Analytics therefore becomes a <strong>governance capability</strong> rather than a reporting capability.</p>
+</section>
+<section id="conclusion" class="level1" data-number="11">
+<h1 data-number="11"><span class="header-section-number">11</span> Conclusion</h1>
+<p>The future of Data Science is not the model. The future is the <strong>enterprise learning system</strong>.</p>
+<p>Organizations that successfully integrate Business Architecture, experimentation, MLOps, governance and continuous feedback mechanisms create adaptive systems capable of evolving alongside the business itself. In such organizations, machine learning is no longer an isolated technical discipline: it becomes a <strong>strategic capability embedded within the architecture of the enterprise</strong>.</p>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+<script src="paper_files/libs/quarto-html/zenscroll-min.js"></script>
+</body></html>
