@@ -1,16 +1,14 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
-<head>
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
 
-<meta charset="utf-8" />
-<meta name="generator" content="quarto-1.9.38" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-
-<meta name="author" content="N. Javier Buitrago Aza" />
-<meta name="dcterms.date" content="2026-06-04" />
-<meta name="keywords" content="Business Architecture, MLOps, Data Science, Enterprise Learning Systems, Quality Attributes, Experimentation" />
+<meta name="author" content="N. Javier Buitrago Aza">
+<meta name="dcterms.date" content="2026-06-05">
+<meta name="keywords" content="Business Architecture, MLOps, Data Science, Enterprise Learning Systems, Quality Attributes, Experimentation">
 
 <title>Architecting a Business with MLOps and Data Science</title>
 <style>
@@ -30,10 +28,21 @@ ul.task-list li input[type="checkbox"] {
 }
 </style>
 
-<!-- htmldependencies:E3FAD763 -->
+
+<script src="paper_files/libs/clipboard/clipboard.min.js"></script>
+<script src="paper_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="paper_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="paper_files/libs/quarto-html/popper.min.js"></script>
+<script src="paper_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="paper_files/libs/quarto-html/anchor.min.js"></script>
+<link href="paper_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="paper_files/libs/quarto-html/quarto-syntax-highlighting-de63f62b328812d8e578a4d74e282472.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="paper_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="paper_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="paper_files/libs/bootstrap/bootstrap-396601e3c213cf3354c4ecdeb513c086.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <style>html{ scroll-behavior: smooth; }</style>
 
-  <script defer="" src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
   <script>document.addEventListener("DOMContentLoaded", function () {
  var mathElements = document.getElementsByClassName("math");
  var macros = [];
@@ -48,7 +57,7 @@ ul.task-list li input[type="checkbox"] {
    });
 }}});
   </script>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css" />
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css">
 
 <script type="text/javascript">
 const typesetMath = (el) => {
@@ -79,17 +88,37 @@ window.Quarto = {
 
 </head>
 
-<body>
+<body class="quarto-light">
 
 <div id="quarto-content" class="page-columns page-rows-contents page-layout-article toc-left">
 <div id="quarto-sidebar-toc-left" class="sidebar toc-left">
-  <div id="quarto-toc-target"></div>
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction"><span class="header-section-number">1</span> Introduction</a></li>
+  <li><a href="#the-problem-with-traditional-data-science" id="toc-the-problem-with-traditional-data-science" class="nav-link" data-scroll-target="#the-problem-with-traditional-data-science"><span class="header-section-number">2</span> The Problem with Traditional Data Science</a></li>
+  <li><a href="#the-enterprise-as-a-dynamic-learning-system" id="toc-the-enterprise-as-a-dynamic-learning-system" class="nav-link" data-scroll-target="#the-enterprise-as-a-dynamic-learning-system"><span class="header-section-number">3</span> The Enterprise as a (Dynamic) Learning System</a>
+  <ul class="collapse">
+  <li><a href="#a-formal-model-of-the-enterprise" id="toc-a-formal-model-of-the-enterprise" class="nav-link" data-scroll-target="#a-formal-model-of-the-enterprise"><span class="header-section-number">3.1</span> A formal model of the enterprise</a></li>
+  <li><a href="#the-enterprise-value-function" id="toc-the-enterprise-value-function" class="nav-link" data-scroll-target="#the-enterprise-value-function"><span class="header-section-number">3.2</span> The enterprise value function</a></li>
+  </ul></li>
+  <li><a href="#business-architecture-as-the-missing-layer" id="toc-business-architecture-as-the-missing-layer" class="nav-link" data-scroll-target="#business-architecture-as-the-missing-layer"><span class="header-section-number">4</span> Business Architecture as the Missing Layer</a></li>
+  <li><a href="#architecturally-significant-requirements" id="toc-architecturally-significant-requirements" class="nav-link" data-scroll-target="#architecturally-significant-requirements"><span class="header-section-number">5</span> Architecturally Significant Requirements</a></li>
+  <li><a href="#experimentation-as-a-business-capability" id="toc-experimentation-as-a-business-capability" class="nav-link" data-scroll-target="#experimentation-as-a-business-capability"><span class="header-section-number">6</span> Experimentation as a Business Capability</a></li>
+  <li><a href="#propensity-models-as-strategic-decision-engines" id="toc-propensity-models-as-strategic-decision-engines" class="nav-link" data-scroll-target="#propensity-models-as-strategic-decision-engines"><span class="header-section-number">7</span> Propensity Models as Strategic Decision Engines</a></li>
+  <li><a href="#drift-as-enterprise-risk" id="toc-drift-as-enterprise-risk" class="nav-link" data-scroll-target="#drift-as-enterprise-risk"><span class="header-section-number">8</span> Drift as Enterprise Risk</a></li>
+  <li><a href="#stratified-modeling-at-scale" id="toc-stratified-modeling-at-scale" class="nav-link" data-scroll-target="#stratified-modeling-at-scale"><span class="header-section-number">9</span> Stratified Modeling at Scale</a></li>
+  <li><a href="#the-strategic-recommendation-layer" id="toc-the-strategic-recommendation-layer" class="nav-link" data-scroll-target="#the-strategic-recommendation-layer"><span class="header-section-number">10</span> The Strategic Recommendation Layer</a></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion"><span class="header-section-number">11</span> Conclusion</a></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="paper.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
 </div>
-<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
 </div>
 <main class="content" id="quarto-document-content">
 <p style="margin: 0 0 1.5rem; font-size: 0.9rem;">
-  <a href="../../../index.html">&larr; Back to portfolio</a>
+  <a href="../../../index.html">← Back to portfolio</a>
 </p>
 
 <header id="title-block-header" class="quarto-title-block default">
@@ -119,7 +148,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">June 4, 2026</p>
+      <p class="date">June 5, 2026</p>
     </div>
   </div>
   
@@ -142,27 +171,7 @@ window.Quarto = {
 
 </header>
 
-<nav id="TOC" role="doc-toc">
-    <h2 id="toc-title">Table of contents</h2>
-   
-  <ul>
-  <li><a href="#introduction" id="toc-introduction"><span class="header-section-number">1</span> Introduction</a></li>
-  <li><a href="#the-problem-with-traditional-data-science" id="toc-the-problem-with-traditional-data-science"><span class="header-section-number">2</span> The Problem with Traditional Data Science</a></li>
-  <li><a href="#the-enterprise-as-a-dynamic-learning-system" id="toc-the-enterprise-as-a-dynamic-learning-system"><span class="header-section-number">3</span> The Enterprise as a (Dynamic) Learning System</a>
-  <ul>
-  <li><a href="#a-formal-model-of-the-enterprise" id="toc-a-formal-model-of-the-enterprise"><span class="header-section-number">3.1</span> A formal model of the enterprise</a></li>
-  <li><a href="#the-enterprise-value-function" id="toc-the-enterprise-value-function"><span class="header-section-number">3.2</span> The enterprise value function</a></li>
-  </ul></li>
-  <li><a href="#business-architecture-as-the-missing-layer" id="toc-business-architecture-as-the-missing-layer"><span class="header-section-number">4</span> Business Architecture as the Missing Layer</a></li>
-  <li><a href="#architecturally-significant-requirements" id="toc-architecturally-significant-requirements"><span class="header-section-number">5</span> Architecturally Significant Requirements</a></li>
-  <li><a href="#experimentation-as-a-business-capability" id="toc-experimentation-as-a-business-capability"><span class="header-section-number">6</span> Experimentation as a Business Capability</a></li>
-  <li><a href="#propensity-models-as-strategic-decision-engines" id="toc-propensity-models-as-strategic-decision-engines"><span class="header-section-number">7</span> Propensity Models as Strategic Decision Engines</a></li>
-  <li><a href="#drift-as-enterprise-risk" id="toc-drift-as-enterprise-risk"><span class="header-section-number">8</span> Drift as Enterprise Risk</a></li>
-  <li><a href="#stratified-modeling-at-scale" id="toc-stratified-modeling-at-scale"><span class="header-section-number">9</span> Stratified Modeling at Scale</a></li>
-  <li><a href="#the-strategic-recommendation-layer" id="toc-the-strategic-recommendation-layer"><span class="header-section-number">10</span> The Strategic Recommendation Layer</a></li>
-  <li><a href="#conclusion" id="toc-conclusion"><span class="header-section-number">11</span> Conclusion</a></li>
-  </ul>
-</nav>
+
 <section id="introduction" class="level1" data-number="1">
 <h1 data-number="1"><span class="header-section-number">1</span> Introduction</h1>
 <p>Most organizations invest heavily in Data Science, Machine Learning and MLOps across the data engineering, data governance and platform layers. In the particular case of models — classical classifiers, regressions, even forecasting models — models are trained, dashboards are built, experiments are executed, and cloud platforms process vast amounts of data every day. Yet despite these investments, many organizations still struggle to convert analytical insights into measurable business value.</p>
@@ -183,7 +192,7 @@ window.Quarto = {
 <p>These metrics are important, but they are not business outcomes.</p>
 <p>A highly accurate model with low adoption, poor operational integration or limited strategic impact generates little value. Business value emerges only when <strong>predictions become decisions</strong>, <strong>decisions become actions</strong> and <strong>actions influence measurable outcomes</strong>.</p>
 <p>This observation leads to a simple but powerful principle:</p>
-<blockquote>
+<blockquote class="blockquote">
 <p>The objective of Machine Learning is not prediction. The objective is <strong>improved decision-making</strong>.</p>
 </blockquote>
 </section>
@@ -192,7 +201,7 @@ window.Quarto = {
 <p>A modern enterprise should not be understood as a static collection of processes, applications, dashboards and machine learning models. It is better understood as a <strong>dynamic system</strong>: its state changes over time as leaders launch experiments, deploy models, modify processes, reallocate resources and respond to market signals.</p>
 <p>It is also a <strong>learning system</strong>, because those actions generate outcomes and those outcomes should feed back into future decisions. In this sense, MLOps is not only a technical discipline for deploying models; it is part of the enterprise feedback mechanism that allows the organization to observe, act, measure and adapt.</p>
 <section id="a-formal-model-of-the-enterprise" class="level2" data-number="3.1">
-<h2 data-number="3.1"><span class="header-section-number">3.1</span> A formal model of the enterprise</h2>
+<h2 data-number="3.1" class="anchored" data-anchor-id="a-formal-model-of-the-enterprise"><span class="header-section-number">3.1</span> A formal model of the enterprise</h2>
 <p>An enterprise <span class="math inline">\mathcal{E}</span> can be viewed as a dynamic system composed of capabilities <span class="math inline">\mathcal{C}</span>, processes <span class="math inline">\mathcal{P}</span>, resources <span class="math inline">\mathcal{R}</span>, data assets <span class="math inline">\mathcal{D}</span> and decision mechanisms <span class="math inline">\mathcal{M}</span>. In the context of MLOps and Data Science, the decision mechanisms of interest are machine learning models; for the purposes of this discussion we therefore denote the set of all ML models by <span class="math inline">\mathcal{M}</span>.</p>
 <p>Let <span class="math inline">\mathcal{S}</span> be the set of possible enterprise states, let <span class="math inline">\mathcal{A}</span> be the set of possible organizational actions, and let <span class="math inline">t \in \mathbb{N} \cup \{0\}</span> denote discrete time. A <strong>state-transition function</strong> is a map</p>
 <p><span class="math display">
@@ -221,7 +230,7 @@ S_0 \;\equiv\; (C_0, P_0, R_0, D_0, M_0).
 <p>The transition equation <span class="math inline">S_{t+1} = F(S_t, A_t)</span> therefore expresses that the next enterprise state is determined by the current enterprise state and the action applied to it.</p>
 </section>
 <section id="the-enterprise-value-function" class="level2" data-number="3.2">
-<h2 data-number="3.2"><span class="header-section-number">3.2</span> The enterprise value function</h2>
+<h2 data-number="3.2" class="anchored" data-anchor-id="the-enterprise-value-function"><span class="header-section-number">3.2</span> The enterprise value function</h2>
 <p>We can now define an <strong>enterprise value function</strong> as a map</p>
 <p><span class="math display">
 V \colon \mathcal{S} \rightarrow \mathbb{R},
@@ -253,11 +262,11 @@ V \colon \mathcal{S} \rightarrow \mathbb{R},
 <li>Metrics remain disconnected from governance.</li>
 </ul>
 <p>Business <strong>capabilities</strong> become the primary mechanism through which analytical insights create enterprise value. Instead of asking</p>
-<blockquote>
+<blockquote class="blockquote">
 <p><em>What model should we build?</em></p>
 </blockquote>
 <p>organizations should ask</p>
-<blockquote>
+<blockquote class="blockquote">
 <p><em>What business capability are we trying to improve?</em></p>
 </blockquote>
 <p>This shift fundamentally changes how MLOps systems are designed and governed.</p>
@@ -329,7 +338,7 @@ PSI = \sum_{k=1}^{K} (A_k - E_k)\,
       \ln\!\left( \frac{A_k}{E_k} \right).
 </span></p>
 <p>A common interpretation is:</p>
-<table class="caption-top">
+<table class="caption-top table">
 <thead>
 <tr class="header">
 <th><span class="math inline">PSI</span> value</th>
@@ -387,7 +396,7 @@ EMLR = P_{\text{drift}} \times \text{Impact}_{\text{business}}.
 <li>Operational feasibility.</li>
 </ol>
 <p>The resulting diagnoses map directly to recommendations:</p>
-<table class="caption-top">
+<table class="caption-top table">
 <thead>
 <tr class="header">
 <th>Diagnosis</th>
@@ -427,7 +436,7 @@ EMLR = P_{\text{drift}} \times \text{Impact}_{\text{business}}.
 
 </main>
 <!-- /main column -->
-<script id = "quarto-html-after-body" type="application/javascript">
+<script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";
     const anchorJS = new window.AnchorJS();
@@ -829,6 +838,8 @@ EMLR = P_{\text{drift}} \times \text{Impact}_{\text{business}}.
   </script>
 </div> <!-- /content -->
 
-</body>
 
-</html>
+
+
+<script src="paper_files/libs/quarto-html/zenscroll-min.js"></script>
+</body></html>
