@@ -42,6 +42,8 @@ ul.task-list li input[type="checkbox"] {
 <link href="paper_files/libs/bootstrap/bootstrap-396601e3c213cf3354c4ecdeb513c086.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <style>html{ scroll-behavior: smooth; }</style>
 
+<link rel="stylesheet" href="../../css/paper-dark.css">
+
   <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
   <script>document.addEventListener("DOMContentLoaded", function () {
  var mathElements = document.getElementsByClassName("math");
@@ -90,6 +92,8 @@ window.Quarto = {
 
 <body class="quarto-light">
 
+<button id="dark-mode-toggle" class="dm-toggle" aria-label="Toggle dark mode">🌙</button>
+
 <div id="quarto-content" class="page-columns page-rows-contents page-layout-article toc-left">
 <div id="quarto-sidebar-toc-left" class="sidebar toc-left">
   <nav id="TOC" role="doc-toc" class="toc-active">
@@ -133,7 +137,7 @@ window.Quarto = {
   <div class="quarto-title-meta-heading">Affiliation</div>
   
     <div class="quarto-title-meta-contents">
-    <p class="author">N. Javier Buitrago Aza <a href="mailto:njavierbuitragoa@gmail.com" class="quarto-title-author-email"><i class="bi bi-envelope"></i></a> </p>
+    <p class="author">Javier Buitrago (njbaza) <a href="mailto:njavierbuitragoa@gmail.com" class="quarto-title-author-email"><i class="bi bi-envelope"></i></a> </p>
   </div>
   <div class="quarto-title-meta-contents">
         <p class="affiliation">
@@ -146,8 +150,10 @@ window.Quarto = {
 
       
     <div>
-    <div class="quarto-title-meta-heading">Published</div>
+    <script src="paper_files/libs/bootstrap/bootstrap.min.js"></script>
     <div class="quarto-title-meta-contents">
+
+    <script src="../../js/dark-mode.js"></script>
       <p class="date">June 5, 2026</p>
     </div>
   </div>
@@ -174,27 +180,37 @@ window.Quarto = {
 
 <section id="introduction" class="level1" data-number="1">
 <h1 data-number="1"><span class="header-section-number">1</span> Introduction</h1>
-<p>Most organizations invest heavily in Data Science, Machine Learning and MLOps across the data engineering, data governance and platform layers. In the particular case of models — classical classifiers, regressions, even forecasting models — models are trained, dashboards are built, experiments are executed, and cloud platforms process vast amounts of data every day. Yet despite these investments, many organizations still struggle to convert analytical insights into measurable business value.</p>
-<p>One can ask what happens with the expected results, and the answer is usually the same: <strong>the problem is not technological, the problem is architectural.</strong></p>
-<p>To be concrete, machine learning models are often treated as isolated technical assets rather than as components of a larger enterprise system. Accuracy improves, yet decision quality remains unchanged. Experiments produce statistically significant results, yet business outcomes fail to improve. Monitoring platforms detect drift, yet strategic decisions continue to rely on outdated assumptions.</p>
-<p>This article argues that Data Science and MLOps should be viewed as components of a broader enterprise architecture. Modern organizations must evolve from model-centric thinking toward <strong>enterprise learning systems</strong>: architectures capable of continuously sensing, learning, adapting and generating business value. Generative AI is, of course, also a standard to consider; for the purposes of this paper the same discussions apply.</p>
+<p>Most organizations invest heavily in Analytics Initiatives spanning across data engineering, data governance, and Machine Learning Operations (MLOps). Abstract Logical Models—whether classical classifiers, regressions, or forecasting algorithms—are rigorously designed to solve business problems. Specific Model Versions are then trained on vast Datasets and evaluated against offline Metrics to ensure reproducibility before being deployed into scalable Runtime Environments. Yet, despite these artifacts achieving high predictive accuracy and processing vast amounts of data daily, many organizations struggle to operationalize them to generate measurable business value for the Company.</p>
+
+<figure class="figure" style="margin:1.5rem 0; text-align:center;">
+  <img src="paper_files/ontological-model.png" alt="Ontological Model: Data Science & MLOps (Cloud-Agnostic)" style="max-width:100%;height:auto;">
+  <figcaption style="font-size:0.9rem;color:#555;">Figure 1 — Ontological Model: Data Science & MLOps (Cloud-Agnostic).</figcaption>
+</figure>
+
+<p>When expected business outcomes fall short, the root cause is rarely a lack of advanced algorithmic technology; rather, the problem is fundamentally architectural. In software and systems engineering, an architecture must be explicitly designed to satisfy its business goals and Architecturally Significant Requirements (ASRs). Without this structural alignment, organizations suffer from "architectural mismatch," a phenomenon where systems are built from highly optimized individual parts that fail to function cohesively. For instance, an Analytics Actor (such as a Data Scientist) might optimize a Model Version for a specific technical Metric, but if that initiative is not structurally tied to an enterprise Predictive Capability, it fails to meet strategic objectives.</p>
+
+<p>To be concrete, within the scope of this paper, machine learning artifacts are too often treated as isolated technical assets rather than as integrated components of a larger enterprise architecture. Organizations frequently blur the strict ontological distinction between a Logical Model (the mathematical abstraction or hypothesis) and a Model Version (the specific implementation obtained by training on data).</p>
+
+<p>Furthermore, there is a widespread misconception that deploying models requires a monolithic, proprietary software suite; in reality, mature architectures utilize decoupled, cloud-agnostic Runtime Environments (such as serverless functions, Kubernetes clusters, or edge devices) to host these models.</p>
+
+<p>To resolve this, Data Science and MLOps must be formally incorporated into the Enterprise Architecture. Modern organizations must evolve beyond model-centric development and adopt continuous, iterative feedback loops. Experiments must be treated as formal enterprise transactions that rigorously compare Model Versions, guaranteeing that the real-time Predictions they produce adapt to concept drift and consistently generate strategic value for the Company.</p>
 </section>
 <section id="the-problem-with-traditional-data-science" class="level1" data-number="2">
 <h1 data-number="2"><span class="header-section-number">2</span> The Problem with Traditional Data Science</h1>
-<p>Most machine learning initiatives optimize <em>models</em> instead of optimizing the <em>enterprise</em>. Teams frequently focus on:</p>
+<p>Most machine learning initiatives fail to deliver real-world value because they optimize <em>models</em> instead of optimizing the underlying <em>business</em>. Data science teams frequently frame problems entirely around technical objectives, dedicating their efforts to minimizing test data error through specific metrics and engineering tasks:</p>
 <ul>
-<li>Prediction accuracy.</li>
-<li>AUC and F1 scores.</li>
-<li><span class="math inline">R^2</span>, RMSE and similar regression metrics.</li>
-<li>Feature engineering.</li>
-<li>Hyperparameter tuning.</li>
+<li><strong>Prediction accuracy</strong>: Relied upon when classes are balanced and the cost of each error type is similar (e.g., predicting whether a transaction is valid or invalid in a balanced dataset). However, standard accuracy fails to account for asymmetric business costs—such as the differing financial impact of a false positive versus a false negative—and can be highly misleading when data is imbalanced.</li>
+
+<li><strong>AUC and F1 score</strong>: Utilized in classification problems where ranking quality or class imbalance matters (e.g., predicting customer churn, fraud risk, or campaign response). These metrics balance the trade-off between precision (the proportion of relevant predictions) and recall (the proportion of actual events detected).</li>
+
+<li><strong><span class="math inline">R^{2}</span>, RMSE, and MAE</strong>: Employed to quantify the performance of regression models predicting continuous values (e.g., forecasting demand or estimating customer lifetime value). These metrics penalize the distance between predicted and observed data, though they are sensitive to heavy-tailed distributions and outliers.</li>
+
+<li><strong>Feature engineering</strong>: The creative transformation of raw data into mathematically meaningful predictors. This process is necessary to combat the curse of dimensionality and provide machine learning algorithms with unitary, uncorrelated signals (e.g., converting raw transaction logs into recency, frequency, and monetary features).</li>
+
+<li><strong>Hyperparameter tuning</strong>: The computational search for optimal algorithmic configuration bounds (e.g., selecting tree depth in gradient boosting, regularization strength in logistic regression, or learning rates in neural networks). This step is specifically executed to control the bias-variance and precision-recall trade-offs.</li>
 </ul>
-<p>These metrics are important, but they are not business outcomes.</p>
-<p>A highly accurate model with low adoption, poor operational integration or limited strategic impact generates little value. Business value emerges only when <strong>predictions become decisions</strong>, <strong>decisions become actions</strong> and <strong>actions influence measurable outcomes</strong>.</p>
-<p>This observation leads to a simple but powerful principle:</p>
-<blockquote class="blockquote">
-<p>The objective of Machine Learning is not prediction. The objective is <strong>improved decision-making</strong>.</p>
-</blockquote>
+<p>While these metrics and engineering techniques are fundamental to the offline evaluation of a model's statistical properties, they are not business outcomes. Learning algorithms are mathematically designed to reduce training data error, and data analysts seek to minimize validation error; however, the enterprise ultimately requires the optimization of a business-specific performance measure.</p>
+<p>When an organization lacks architectural alignment between technical teams and business stakeholders, data scientists may reach an optimal technical metric (e.g., a near-perfect AUC or an extremely low RMSE) but fail to impact business outcomes such as user retention, operational efficiency, or Return on Investment (ROI). Consequently, solving the mathematical optimization problem is insufficient if the model cannot be translated into strategic decision-making or safely operationalized to generate a quantifiable business impact.</p>
 </section>
 <section id="the-enterprise-as-a-dynamic-learning-system" class="level1" data-number="3">
 <h1 data-number="3"><span class="header-section-number">3</span> The Enterprise as a (Dynamic) Learning System</h1>
