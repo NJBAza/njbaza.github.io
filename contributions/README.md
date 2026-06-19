@@ -86,20 +86,6 @@ System dependencies for PlantUML:
   (Alternatively `sudo apt install plantuml` if you don't mind a system
   package for the diagram tool.)
 
-### 1.4 (PDF only) install a TeX distribution
-
-PDF output uses `xelatex`. Use Quarto's bundled TinyTeX, installed inside the
-same managed location:
-
-```bash
-uv run quarto install tinytex
-```
-
-If you only ever want HTML, skip this step and the `format: pdf` entry in
-[_quarto.yml](_quarto.yml).
-
----
-
 ## 2. Render
 
 Every command is prefixed with `uv run` so it uses the venv's Quarto, not any
@@ -108,25 +94,20 @@ stray system install:
 ```bash
 cd contributions
 
-# render every format declared in _quarto.yml (HTML + PDF)
+# render the HTML paper into ../assets/papers/architecting-business-mlops/
 uv run quarto render
 
-# render only HTML, with live reload in your browser
+# preview the HTML paper with live reload in your browser
 uv run quarto preview paper.qmd --to html
-
-# render only PDF
-uv run quarto render paper.qmd --to pdf
 ```
 
-Output lands in `contributions/_site/` (e.g. `_site/paper.html`,
-`_site/paper.pdf`).
+Output lands in `../assets/papers/architecting-business-mlops/`.
 
 ---
 
 ## 3. Editing tips
 
-- **Math.** Use `$inline$` and `$$display$$`. KaTeX renders the HTML output;
-  LaTeX renders the PDF. No syntax differences.
+- **Math.** Use `$inline$` and `$$display$$`. KaTeX renders the HTML output.
 - **Citations.** Add a BibTeX entry to [references.bib](references.bib), then
   cite as `[@key]`, `[@key1; @key2]` or `@key` (narrative). The reference list
   is generated automatically at the `# References` section.
@@ -182,7 +163,7 @@ The repo ships a workflow at
 
 1. Installs `uv`.
 2. Runs `uv sync` inside `contributions/`.
-3. Runs `uv run quarto render`.
+3. Runs `uv run quarto render --to html`.
 4. Publishes the entire repo to **GitHub Pages**.
 
 To turn it on:
