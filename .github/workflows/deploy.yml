@@ -33,7 +33,7 @@ jobs:
       # --- Render the Quarto paper into assets/papers/ ---
       - name: Render paper
         working-directory: contributions
-        run: uv run quarto render
+        run: uv run quarto render --to html
 
       # --- Publish the entire repo as the static site ---
       - name: Upload artifact

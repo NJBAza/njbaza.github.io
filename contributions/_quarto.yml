@@ -12,7 +12,6 @@ execute:
 # Bibliography is wired up but currently unused by paper.qmd.
 # Add `[@key]` citations in any .qmd to enable the references section.
 bibliography: references.bib
-csl: https://www.zotero.org/styles/ieee
 link-citations: true
 
 format:
@@ -30,22 +29,16 @@ format:
     html-math-method: katex
     smooth-scroll: true
     embed-resources: false
+    include-in-header:
+      text: |
+        <link rel="stylesheet" href="../../css/paper-dark.css">
     # Small "back to portfolio" link in the page header.
     include-before-body:
       text: |
+        <button id="dark-mode-toggle" class="dm-toggle" aria-label="Toggle dark mode">🌙</button>
         <p style="margin: 0 0 1.5rem; font-size: 0.9rem;">
           <a href="../../../index.html">&larr; Back to portfolio</a>
         </p>
-
-  pdf:
-    documentclass: scrartcl
-    papersize: a4
-    geometry:
-      - margin=1in
-    number-sections: true
-    toc: true
-    toc-depth: 3
-    fig-cap-location: bottom
-    keep-tex: false
-    pdf-engine: xelatex
-    cite-method: biblatex
+    include-after-body:
+      text: |
+        <script src="../../js/dark-mode.js"></script>

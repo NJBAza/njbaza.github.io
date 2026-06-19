@@ -36,7 +36,14 @@ desktop.ini
 contributions/.quarto/
 contributions/_freeze/
 contributions/*_files/
+contributions/*.aux
+contributions/*.bcf
+contributions/*.pdf
+contributions/*.tex
 contributions/*.tex.bak
+contributions/*.toc
+contributions/_site/*.pdf
+assets/papers/**/*.pdf
 
 # --- uv / Python env inside contributions/ ---
 contributions/.venv/
